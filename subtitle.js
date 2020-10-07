@@ -1,13 +1,13 @@
-const fs = require("fs");
-const yifysubtitles = require("yifysubtitles");
+const fs = require('fs');
+const yifysubtitles = require('yifysubtitles');
 const OS = require('opensubtitles-api');
 const https = require('https');
 
 module.exports = async (req, res) => {
-
- res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Headers', "*");
-  let query = req.query.query;
+	console.log('working')
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', '*');
+	let query = req.query.query;
 	let tmdbid = req.query.tmdbid;
 	let imdbid = req.query.imdbid;
 	let s = req.query.s;
@@ -21,13 +21,13 @@ module.exports = async (req, res) => {
 	});
 
 	let file_name = 'temp_sub.vtt';
-  var subtitles
+	var subtitles;
 	await OpenSubtitles.search({
 		imdbid: imdbid,
 		sublanguageid: language,
 		season: s,
 		episode: e,
-		extensions: ['srt', 'vtt'],
+		extensions: [ 'srt', 'vtt' ],
 		limit: '1',
 		tmdbid: tmdbid,
 		query: query
@@ -38,16 +38,16 @@ module.exports = async (req, res) => {
 			const request = https.get(sub_url, (response) => {
 				response.pipe(file);
 			});
-  setTimeout(() => {
-                                fs.readFile('./' + file_name, (err, data) => {
-                                        if (err) res.send(err);
-                                        else {
-                                                res.writeHead(200, { 'Content-Type': 'text/vtt' });
-                                                res.write(data);
-                                                res.end();
-                                        }
-                                });
-                        }, 700);
+			setTimeout(() => {
+				fs.readFile('./' + file_name, (err, data) => {
+					if (err) res.send(err);
+					else {
+						res.writeHead(200, { 'Content-Type': 'text/vtt' });
+						res.write(data);
+						res.end();
+					}
+				});
+			}, 1000);
 		})
 		.catch((e) => res.send(e));
 };
